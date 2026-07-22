@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carteira & Novo Aporte · Victor & Luísa</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'DM Sans', sans-serif;
+  background:#0A0C1A;
+  color:#B9B9C7;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:720px; margin:0 auto; background:#0A0C1A; }
+
+#gate {
+  position:fixed; inset:0; z-index:100;
+  background:#0A0C1A; display:flex; align-items:center; justify-content:center; padding:24px;
+}
+.gate-card {
+  width:100%; max-width:380px; text-align:center;
+  background:#111430; border:0.5px solid rgba(201,168,76,0.2); border-radius:14px;
+  padding:44px 32px; position:relative; overflow:hidden;
+}
+.gate-card::before {
+  content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px;
+  border-radius:50%; background:radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+}
+.gate-label { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:#C9A84C; margin-bottom:16px; font-weight:500; }
+.gate-title { font-family:'Playfair Display', serif; font-size:24px; color:#F5F5F0; margin-bottom:20px; }
+.gate-card input {
+  width:100%; background:#0A0C1A; border:0.5px solid rgba(201,168,76,0.2); border-radius:8px;
+  padding:12px 14px; color:#F5F5F0; font-family:'DM Sans', sans-serif; font-size:14px; margin-bottom:14px; outline:none;
+}
+.gate-card button {
+  width:100%; background:rgba(201,168,76,0.12); border:0.5px solid rgba(201,168,76,0.3); border-radius:8px;
+  padding:12px; color:#F0C96E; font-family:'DM Sans', sans-serif; font-size:14px; font-weight:500; cursor:pointer;
+}
+.gate-error { color:#EF4444; font-size:12px; margin-top:10px; display:none; }
+#content { display:none; }
+
+.cover { background:#0A0C1A; border-bottom:1px solid rgba(201,168,76,0.15); padding:48px 40px 40px; position:relative; overflow:hidden; animation:fadeUp .65s ease both; }
+.cover::before { content:''; position:absolute; top:-80px; right:-80px; width:280px; height:280px; border-radius:50%; background:radial-gradient(circle, rgba(201,168,76,0.10) 0%, transparent 70%); }
+.brand-tag { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:#C9A84C; border:0.5px solid rgba(201,168,76,0.25); padding:5px 12px; border-radius:20px; background:rgba(201,168,76,0.06); margin-bottom:28px; }
+.brand-dot { width:6px; height:6px; border-radius:50%; background:#C9A84C; }
+.cover-name { font-family:'Playfair Display', serif; font-size:34px; font-weight:600; color:#F5F5F0; margin:0 0 6px; line-height:1.1; }
+.cover-date { font-size:12px; color:#6B6B85; margin-bottom:20px; }
+.cover-quote { font-family:'Playfair Display', serif; font-style:italic; font-size:17px; color:#C9A84C; line-height:1.5; border-left:2px solid rgba(201,168,76,0.3); padding-left:20px; margin:0; }
+
+.section { padding:36px 40px; border-bottom:1px solid #12132A; animation:fadeUp .55s ease both; }
+.section-label { font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:#8A7A4A; display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+.section-label::after { content:''; flex:1; height:0.5px; background:rgba(201,168,76,0.15); }
+.section-title { font-family:'Playfair Display', serif; font-size:22px; color:#F5F5F0; margin:0 0 8px; font-weight:600; }
+.section-subtitle { font-size:14px; color:#6B6B85; margin:0 0 28px; line-height:1.6; }
+
+.metrics-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px; }
+.metric-card { background:#111430; border:0.5px solid rgba(201,168,76,0.12); border-radius:10px; padding:16px; }
+.metric-label { font-size:11px; color:#8A7A4A; font-weight:500; letter-spacing:.04em; margin:0 0 8px; }
+.metric-value { font-size:22px; font-weight:500; color:#F5F5F0; margin:0 0 4px; line-height:1; }
+.metric-delta { font-size:12px; margin:0; color:#8891A8; }
+.metric-delta.pos { color:#C9A84C; }
+
+.progress-wrap { background:#111430; border:0.5px solid rgba(201,168,76,0.12); border-radius:12px; padding:22px; margin-bottom:8px; }
+.progress-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; }
+.progress-pct { font-family:'Playfair Display', serif; font-size:28px; color:#C9A84C; }
+.progress-goal { font-size:12px; color:#6B6B85; }
+.progress-bar-bg { height:8px; background:#1A1D3D; border-radius:99px; overflow:hidden; margin-bottom:10px; }
+.progress-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#8A7A4A,#C9A84C); width:0%; transition:width 1.2s ease; }
+.progress-foot { display:flex; justify-content:space-between; font-size:12px; color:#6B6B85; }
+.progress-foot b { color:#B9B9C7; font-weight:500; }
+
+.asset-card { background:#111430; border:0.5px solid rgba(201,168,76,0.12); border-radius:12px; padding:20px; margin-bottom:14px; }
+.asset-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; gap:12px; }
+.asset-name { font-family:'Playfair Display', serif; font-size:16px; font-weight:600; color:#F5F5F0; margin-bottom:2px; }
+.asset-sub { font-size:12px; color:#6B6B85; }
+.asset-tags { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+.asset-tag { display:inline-block; font-size:10px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; padding:3px 8px; border-radius:4px; }
+.asset-tag.gold { background:rgba(201,168,76,0.12); color:#F0C96E; }
+.risk-tag { display:inline-block; font-size:10px; font-weight:500; padding:3px 8px; border-radius:4px; }
+.risk-alto { background:rgba(239,68,68,0.1); color:#EF4444; }
+.risk-medio { background:rgba(245,158,11,0.1); color:#F59E0B; }
+.risk-baixo { background:rgba(34,197,94,0.1); color:#4ADE80; }
+.asset-value { font-family:'DM Mono', monospace; font-size:17px; color:#F5F5F0; text-align:right; white-space:nowrap; }
+.asset-alloc { font-size:11px; color:#6B6B85; text-align:right; }
+.asset-desc { font-size:13px; color:#8891A8; line-height:1.65; margin-bottom:14px; }
+.asset-stats { display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; border-top:0.5px solid rgba(201,168,76,0.1); padding-top:14px; }
+.stat-row { display:flex; justify-content:space-between; font-size:12.5px; }
+.stat-label { color:#6B6B85; }
+.stat-value { color:#D8D8E0; font-family:'DM Mono', monospace; font-weight:400; }
+.stat-value.pos { color:#4ADE80; }
+.stat-value.neg { color:#EF4444; }
+.asset-badge-reserve { display:inline-flex; align-items:center; gap:6px; font-size:11px; color:#C9A84C; margin-top:14px; border-top:0.5px solid rgba(201,168,76,0.1); padding-top:12px; }
+
+.alert-box { border-radius:10px; padding:18px 20px; display:flex; gap:14px; margin-bottom:20px; }
+.alert-box.info { background:rgba(201,168,76,0.06); border:0.5px solid rgba(201,168,76,0.2); }
+.alert-title { font-size:13px; font-weight:500; margin:0 0 4px; color:#F0C96E; }
+.alert-text { font-size:14px; line-height:1.6; margin:0; color:#8891A8; }
+
+.destino-card { background:linear-gradient(135deg, rgba(201,168,76,0.10), rgba(201,168,76,0.02)); border:0.5px solid rgba(201,168,76,0.25); border-radius:12px; padding:24px; text-align:center; margin-bottom:20px; }
+.destino-valor { font-family:'Playfair Display', serif; font-size:32px; color:#C9A84C; margin-bottom:6px; }
+.destino-seta { color:#8A7A4A; font-size:20px; margin:8px 0; }
+.destino-produto { font-size:16px; font-weight:500; color:#F5F5F0; }
+.destino-sub { font-size:12px; color:#6B6B85; margin-top:4px; }
+
+.why-list { list-style:none; }
+.why-list li { display:flex; gap:10px; font-size:13px; color:#B9B9C7; padding:9px 0; border-bottom:0.5px solid #12132A; line-height:1.5; }
+.why-list li::before { content:'✓'; color:#C9A84C; flex-shrink:0; font-weight:500; }
+
+.closing { background:#08091A; padding:40px; text-align:center; border-top:1px solid rgba(201,168,76,0.15); }
+.closing-quote { font-family:'Playfair Display', serif; font-style:italic; font-size:19px; color:#B9B9C7; line-height:1.6; max-width:480px; margin:0 auto 20px; }
+.closing-quote span { color:#C9A84C; }
+.closing-cta { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:500; color:#F0C96E; border:0.5px solid rgba(201,168,76,0.3); padding:10px 20px; border-radius:20px; background:rgba(201,168,76,0.08); cursor:pointer; margin-bottom:20px; }
+.closing-sign { font-size:11px; color:#8A7A4A; letter-spacing:.04em; }
+
+@keyframes fadeUp { from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);} }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-label">Grão · Grupo Primo</div>
+    <div class="gate-title">Acesso ao relatório</div>
+    <input type="password" id="pwd" placeholder="Senha de acesso" onkeydown="if(event.key==='Enter')checkPwd()">
+    <button onclick="checkPwd()">Entrar</button>
+    <div class="gate-error" id="gate-err">Senha incorreta. Tente novamente.</div>
+  </div>
+</div>
+
+<div id="content">
+<div class="wrap">
+
+  <div class="cover">
+    <div class="brand-tag"><span class="brand-dot"></span>Grão · Grupo Primo</div>
+    <div class="cover-name">Victor &amp; Luísa</div>
+    <div class="cover-date">Carteira atual &amp; destino do novo aporte</div>
+    <p class="cover-quote">Cada real que entra na reserva é um degrau a menos entre vocês e a tranquilidade de ter um colchão de segurança pronto.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Reserva de emergência</div>
+    <h2 class="section-title">Onde a reserva está hoje</h2>
+    <p class="section-subtitle">A meta do casal é R$ 62.000 — o equivalente a alguns meses de despesas cobertos, sem depender de ninguém em caso de imprevisto.</p>
+
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <div class="progress-pct" id="pct">9,04%</div>
+        <div class="progress-goal">da meta de R$ 62.000,00</div>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar"></div></div>
+      <div class="progress-foot">
+        <span>Acumulado: <b>R$ 5.607,31</b></span>
+        <span>Falta: <b>R$ 56.392,69</b></span>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">JÁ NA RESERVA</div>
+        <div class="metric-value">R$ 607,31</div>
+        <div class="metric-delta">Trend DI FIC RF Simples RL</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">ENTRA AGORA</div>
+        <div class="metric-value">R$ 5.000,00</div>
+        <div class="metric-delta pos">Novo aporte · Tesouro Selic 2031</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Posição atual</div>
+    <h2 class="section-title">Carteira de Victor &amp; Luísa</h2>
+    <p class="section-subtitle">Três posições ativas hoje na Rico, com naturezas e níveis de risco bem diferentes entre si.</p>
+
+    <div class="asset-card">
+      <div class="asset-top">
+        <div>
+          <div class="asset-name">BBAS3 · Banco do Brasil ON</div>
+          <div class="asset-sub">Ação · Brasil</div>
+          <div class="asset-tags">
+            <span class="asset-tag gold">Ação</span>
+            <span class="risk-tag risk-alto">Risco Alto · 41</span>
+          </div>
+        </div>
+        <div>
+          <div class="asset-value">R$ 40,82</div>
+          <div class="asset-alloc">2 cotas</div>
+        </div>
+      </div>
+      <p class="asset-desc">Ação ordinária do Banco do Brasil, negociada na bolsa. Renda variável: o valor sobe e desce com o humor do mercado e os resultados do banco. Posição pequena hoje, sem função de reserva — é patrimônio de longo prazo, não colchão de segurança.</p>
+      <div class="asset-stats">
+        <div class="stat-row"><span class="stat-label">Preço médio</span><span class="stat-value">R$ 19,49</span></div>
+        <div class="stat-row"><span class="stat-label">Preço atual</span><span class="stat-value">R$ 20,41</span></div>
+        <div class="stat-row"><span class="stat-label">Rentabilidade</span><span class="stat-value pos">▲ 4,41%</span></div>
+      </div>
+    </div>
+
+    <div class="asset-card">
+      <div class="asset-top">
+        <div>
+          <div class="asset-name">BTCI11 · BTG Pactual Fundo de CRI</div>
+          <div class="asset-sub">Fundo Imobiliário</div>
+          <div class="asset-tags">
+            <span class="asset-tag gold">FII</span>
+            <span class="risk-tag risk-medio">Risco Médio · 21</span>
+          </div>
+        </div>
+        <div>
+          <div class="asset-value">R$ 91,90</div>
+          <div class="asset-alloc">10,00 cotas</div>
+        </div>
+      </div>
+      <p class="asset-desc">Fundo imobiliário "de papel": em vez de comprar imóveis físicos, o fundo compra recebíveis do setor imobiliário (CRI, LCI e afins), atrelados principalmente ao IPCA. Paga dividendos mensais isentos de Imposto de Renda para pessoa física. Também é renda variável — a cota oscila com o mercado.</p>
+      <div class="asset-stats">
+        <div class="stat-row"><span class="stat-label">Preço médio</span><span class="stat-value">R$ 9,35</span></div>
+        <div class="stat-row"><span class="stat-label">Preço atual</span><span class="stat-value">R$ 9,19</span></div>
+        <div class="stat-row"><span class="stat-label">Rent. preço médio</span><span class="stat-value neg">▼ 1,71%</span></div>
+        <div class="stat-row"><span class="stat-label">Proventos acum.</span><span class="stat-value pos">▲ R$ 9,72</span></div>
+        <div class="stat-row"><span class="stat-label">Rent. com proventos</span><span class="stat-value pos">▲ 8,68%</span></div>
+        <div class="stat-row"><span class="stat-label">Rentabilidade bruta</span><span class="stat-value pos">▲ 10,52%</span></div>
+      </div>
+    </div>
+
+    <div class="asset-card">
+      <div class="asset-top">
+        <div>
+          <div class="asset-name">Trend DI FIC RF Simples RL</div>
+          <div class="asset-sub">Pós-Fixado</div>
+          <div class="asset-tags">
+            <span class="asset-tag gold">Renda Fixa</span>
+            <span class="risk-tag risk-baixo">Risco Baixo · 1</span>
+          </div>
+        </div>
+        <div>
+          <div class="asset-value">R$ 607,31</div>
+          <div class="asset-alloc">posição em 20/07/2026</div>
+        </div>
+      </div>
+      <p class="asset-desc">Fundo de renda fixa referenciado em DI (acompanha de perto a Selic/CDI). Baixo risco, alta liquidez — cotização e liquidação em D+0, ou seja, o dinheiro fica disponível no mesmo dia do resgate. É o tipo de investimento pensado para não perder valor e estar sempre à mão quando precisar dele.</p>
+      <div class="asset-stats">
+        <div class="stat-row"><span class="stat-label">Valor aplicado</span><span class="stat-value">R$ 545,59</span></div>
+        <div class="stat-row"><span class="stat-label">Rendimento</span><span class="stat-value pos">▲ R$ 61,72</span></div>
+        <div class="stat-row"><span class="stat-label">Valor líquido</span><span class="stat-value">R$ 602,49</span></div>
+        <div class="stat-row"><span class="stat-label">Liquidez</span><span class="stat-value">D+0</span></div>
+      </div>
+      <div class="asset-badge-reserve">● Esta posição já compõe a reserva de emergência do casal</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Novo aporte</div>
+    <h2 class="section-title">Para onde vai o R$ 5.000</h2>
+    <p class="section-subtitle">Todo o aporte deste ciclo tem um único destino: reforçar a reserva de emergência.</p>
+
+    <div class="destino-card">
+      <div class="destino-valor">R$ 5.000,00</div>
+      <div class="destino-seta">↓</div>
+      <div class="destino-produto">Tesouro Selic 2031</div>
+      <div class="destino-sub">Passa a compor a reserva de emergência, junto com o Trend DI FIC RF</div>
+    </div>
+
+    <div class="alert-box info">
+      <div>
+        <div class="alert-title">Por que Tesouro Selic para reserva</div>
+        <p class="alert-text">É o título público mais indicado para esse objetivo: liquidez diária, garantia do Tesouro Nacional e rentabilidade atrelada à Selic. Depois de resgatado, o dinheiro cai na conta em D+1 — essencial para um imprevisto.</p>
+      </div>
+    </div>
+
+    <ul class="why-list">
+      <li>Soma-se ao que já está no Trend DI FIC RF: reserva passa a ter duas frentes, R$ 607,31 + R$ 5.000,00</li>
+      <li>Reserva total sobe de R$ 607,31 para R$ 5.607,31 — de 0,98% para 9,04% da meta de R$ 62.000</li>
+      <li>BBAS3 e BTCI11 seguem fora da reserva — continuam como posições de renda variável, sem função de colchão de segurança</li>
+    </ul>
+  </div>
+
+  <div class="closing">
+    <p class="closing-quote">Reserva não se constrói de uma vez — se constrói <span>aporte após aporte</span>, até virar tranquilidade.</p>
+    <div class="closing-sign">Matheus Melo · Grão | Grupo Primo</div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function checkPwd(){
+  const val = document.getElementById('pwd').value;
+  if(val === 'Victor2026'){
+    document.getElementById('gate').style.display='none';
+    document.getElementById('content').style.display='block';
+    setTimeout(()=>{ document.getElementById('bar').style.width='9.04%'; }, 200);
+  } else {
+    document.getElementById('gate-err').style.display='block';
+  }
+}
+function sendPrompt(text){
+  if(window.parent) window.parent.postMessage({type:'sendPrompt', text:text}, '*');
+}
+</script>
+</body>
+</html>
